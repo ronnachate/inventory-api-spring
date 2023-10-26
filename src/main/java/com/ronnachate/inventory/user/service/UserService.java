@@ -15,6 +15,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public Optional<User> getById(UUID id) {
-        return userRepository.findById(null);
+        var user = userRepository.findById(id);
+        return user;
     }
 }

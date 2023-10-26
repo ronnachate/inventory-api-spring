@@ -2,9 +2,9 @@ package com.ronnachate.inventory.user.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ronnachate.inventory.user.entity.User;
+import com.ronnachate.inventory.user.dto.UserDTO;
+import com.ronnachate.inventory.user.entity.UserStatus;
 import com.ronnachate.inventory.user.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private UserService userService;
@@ -35,9 +39,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getById(@PathVariable String id) {
-        var uuid = UUID.fromString("cd844d6a-73d8-11ee-b962-0242ac120002");
-        return userService.getById(uuid);
-        
+    public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
+        try {
+            var response = userService.getById(id);
+
+            if (response.isPresent()) {
+                var user = response.get();
+
+                var userDTO = modelMapper.map(user, UserDTO.class);
+
+                return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
