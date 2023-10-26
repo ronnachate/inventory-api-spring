@@ -18,11 +18,16 @@ repositories {
 dependencies {
 	implementation (
         'org.springframework.boot:spring-boot-starter-web',
-        'org.springframework.boot:spring-boot-starter-data-jpa'
+        'org.springframework.boot:spring-boot-starter-data-jpa',
+		'org.postgresql:postgresql'
 	)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootRun {
+    environment = ["DB_HOST": "127.0.0.1", "DB_PORT": "5432", "DB_NAME": "inventory", "DB_USER": "postgres", "DB_PASS": "postgres"]
 }
