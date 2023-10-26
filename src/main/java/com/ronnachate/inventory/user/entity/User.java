@@ -28,6 +28,10 @@ public class User {
     @Column( name= "username", length= 50, unique=true)
     private String username;
 
+    @ManyToOne
+    @JoinColumn(name = "statusId", referencedColumnName = "id")
+    private UserStatus status;
+
     @CreationTimestamp
     @Column( name= "createdAt", nullable = true )
     private Date createdAt;
