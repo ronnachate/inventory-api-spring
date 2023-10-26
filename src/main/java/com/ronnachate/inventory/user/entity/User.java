@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
 
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
