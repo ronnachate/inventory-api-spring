@@ -13,6 +13,10 @@ public class UserStatus {
     @Column( name= "name", length= 100 )
     private String name;
 
+    //jpa only
+    protected UserStatus() {
+    }
+
     public UserStatus(long id, String name) {
         this.id = id;
         this.name = name;

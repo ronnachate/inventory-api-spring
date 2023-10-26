@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "app.db.seed.enabled",
+  "type": "java.lang.String",
+  "description": "Indicate if we need to seed the database with required data"
+}]}
