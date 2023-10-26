@@ -20,7 +20,10 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation('org.modelmapper:modelmapper:3.2.0')
+	implementation 'org.modelmapper:modelmapper:3.2.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.21.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.21.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.21.0'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -30,5 +33,13 @@ tasks.named('test') {
 }
 
 bootRun {
-    environment = ["DB_HOST": "127.0.0.1", "DB_PORT": "5432", "DB_NAME": "inventory", "DB_USER": "postgres", "DB_PASS": "postgres"]
+    environment = [
+		"DB_HOST": "127.0.0.1",
+		"DB_PORT": "5432",
+		"DB_NAME": "inventory",
+		"DB_USER": "postgres",
+		"DB_PASS": "postgres",
+		"LOG_DIR": "/Users/ronnachate/spring/logs",
+		"RUN_ENV": "development"
+	]
 }

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ronnachate.inventory.user.dto.UserDTO;
-import com.ronnachate.inventory.user.entity.UserStatus;
 import com.ronnachate.inventory.user.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
     private ModelMapper modelMapper;
@@ -50,9 +53,11 @@ public class UserController {
 
                 return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
             } else {
+                logger.error(String.format("getById not found with: %s", id.toString()));
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
+            logger.error("getById Error", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

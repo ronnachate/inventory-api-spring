@@ -11,11 +11,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.modelmapper.ModelMapper;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @SpringBootApplication
 public class InventoryApplication {
 
+	private static final Logger logger = LogManager.getLogger(InventoryApplication.class);
+
 	public static void main(String[] args) {
+
 		SpringApplication.run(InventoryApplication.class, args);
 	}
 
@@ -32,6 +37,7 @@ public class InventoryApplication {
 	public CommandLineRunner seedRequiredData() {
 		return args -> {
 			if (userStatusRepository.count() == 0) {
+				logger.info("Seeding user status data");
 				List<UserStatus> userStatuses = Arrays.asList(
 						new UserStatus(1, "Active"),
 						new UserStatus(2, "Inactive"),
