@@ -23,7 +23,7 @@ public class InventoryApplication {
 
 	@Bean
 	@ConditionalOnProperty(prefix = "app", name = "db.seed.enabled", havingValue = "true")
-	public CommandLineRunner demoCommandLineRunner() {
+	public CommandLineRunner seedRequiredData() {
 		return args -> {
 			if (userStatusRepository.count() == 0) {
 				List<UserStatus> userStatuses = Arrays.asList(
