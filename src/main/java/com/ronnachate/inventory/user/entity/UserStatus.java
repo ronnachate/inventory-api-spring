@@ -1,8 +1,10 @@
 package com.ronnachate.inventory.user.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "user_statuses")
 public class UserStatus {
 

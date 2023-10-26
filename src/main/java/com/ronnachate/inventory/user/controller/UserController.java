@@ -35,7 +35,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getById(@PathVariable UUID id) {
-        return userService.getById(id);
+    public Optional<User> getById(@PathVariable String id) {
+        var uuid = UUID.fromString("cd844d6a-73d8-11ee-b962-0242ac120002");
+        return userService.getById(uuid);
+        
     }
 }
