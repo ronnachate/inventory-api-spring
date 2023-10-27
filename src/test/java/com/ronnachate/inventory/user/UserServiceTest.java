@@ -70,7 +70,7 @@ public class UserServiceTest {
         var mockUser = new User("tile1", "name1", "lastname1", "user1");
         List<User> users = Arrays.asList(mockUser);
         Page<User> pagedResponse = new PageImpl<User>(users);
-        PageRequest pageRequest = PageRequest.of(page, rows);
+        PageRequest pageRequest = PageRequest.of(page -1, rows);
         when(userRepository.findAll(pageRequest)).thenReturn(pagedResponse);
         var userPage = userService.getUsers(page, rows);
         
@@ -101,7 +101,7 @@ public class UserServiceTest {
     void getUsers_should_throw_error_when_error_found() {
         int page = 1;
         int rows = 10;
-        PageRequest pageRequest = PageRequest.of(page, rows);
+        PageRequest pageRequest = PageRequest.of(page - 1, rows);
         when(userRepository.findAll(pageRequest)).thenThrow(new ArrayIndexOutOfBoundsException());
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
             userService.getUsers(page, rows);
