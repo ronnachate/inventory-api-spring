@@ -3,11 +3,10 @@ package com.ronnachate.inventory.shared.pagination;
 import java.lang.reflect.Type;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
-
 import org.modelmapper.ModelMapper;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class Resultset<T, DTO> {
 
     private int page;
