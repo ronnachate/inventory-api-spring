@@ -22,7 +22,7 @@ public class UserService {
     }
 
     public Page<User> getUsers(int page, int rows) {
-        PageRequest pageRequest = PageRequest.of(page, rows);
+        PageRequest pageRequest = PageRequest.of(page - 1, rows);
         Page<User> pagingUser = userRepository.findAll(pageRequest);
         return pagingUser;
     }

@@ -88,7 +88,7 @@ public class UserServiceTest {
         int rows = 10;
         List<User> users = new ArrayList<User>();
         Page<User> pagedResponse = new PageImpl<User>(users);
-        PageRequest pageRequest = PageRequest.of(page, rows);
+        PageRequest pageRequest = PageRequest.of(page - 1, rows);
         when(userRepository.findAll(pageRequest)).thenReturn(pagedResponse);
         var userPage = userService.getUsers(page, rows);
         
