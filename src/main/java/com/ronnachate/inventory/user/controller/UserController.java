@@ -1,9 +1,6 @@
 package com.ronnachate.inventory.user.controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -13,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ronnachate.inventory.shared.pagination.Resultset;
+import com.ronnachate.inventory.user.entity.User;
 import com.ronnachate.inventory.user.dto.UserDTO;
 import com.ronnachate.inventory.user.service.UserService;
 
@@ -31,12 +31,17 @@ public class UserController {
     private UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<String>> getUsers() {
+    public ResponseEntity<Resultset<User, UserDTO>> getUsers(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer rows) {
         try {
-            List<String> userNames = Arrays.asList("foo", "bar");
+            var pageUser = userService.getUsers(page, rows);
+            Resultset<User, UserDTO> resultset = new Resultset<User, UserDTO>(modelMapper, page, rows,
+                    (int) pageUser.getTotalElements(), pageUser.getTotalPages(), pageUser.getContent(), UserDTO.class);
+            return new ResponseEntity<Resultset<User, UserDTO>>(resultset, HttpStatus.OK);
 
-            return new ResponseEntity<>(userNames, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("getUsers Error", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
