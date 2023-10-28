@@ -26,4 +26,4 @@ $ ./gradlew testCodeCoverageReport
 
 ## OpenAPI documentation
 
-* request to /swagger-ui
+* request to /swagger-ui/index.html

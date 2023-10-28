@@ -1,5 +1,22 @@
-{"properties": [{
-  "name": "app.db.seed.enabled",
-  "type": "java.lang.String",
-  "description": "Indicate if we need to seed the database with required data"
-}]}
+{"properties": [
+  {
+    "name": "app.db.seed.enabled",
+    "type": "java.lang.String",
+    "description": "Indicate if we need to seed the database with required data"
+  },
+  {
+    "name": "app.env",
+    "type": "java.lang.String",
+    "description": "Running evnironment"
+  },
+  {
+    "name": "app.header.key",
+    "type": "java.lang.String",
+    "description": "Request header key for the application key"
+  },
+  {
+    "name": "app.applicationkey",
+    "type": "java.lang.String",
+    "description": "application key for the header"
+  }
+]}

@@ -51,6 +51,7 @@ bootRun {
 		"DB_USER": "postgres",
 		"DB_PASS": "postgres",
 		"LOG_DIR": "/Users/ronnachate/spring/logs",
-		"RUN_ENV": "development"
+		"RUN_ENV": "development",
+		"APPLICATION_KEY": "4f2f2ef6-6cfa-11ee-b962-0242ac120002"
 	]
 }
