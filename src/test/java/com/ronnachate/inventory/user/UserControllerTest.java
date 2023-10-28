@@ -55,7 +55,7 @@ public class UserControllerTest {
     private UserController userController;
 
     @BeforeEach
-    void printApplicationContext() {
+    void Setup() {
         mockMvc = standaloneSetup(userController).build();
     }
 
