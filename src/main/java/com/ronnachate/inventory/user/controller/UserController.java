@@ -18,6 +18,11 @@ import com.ronnachate.inventory.user.entity.User;
 import com.ronnachate.inventory.user.dto.UserDTO;
 import com.ronnachate.inventory.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -30,6 +35,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "Get users", description = "Ger users with pagination")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful return users data"),
+            @ApiResponse(responseCode = "500", description = "internal server error", content = @Content)
+    })
     @GetMapping()
     public ResponseEntity<Resultset<User, UserDTO>> getUsers(
             @RequestParam(defaultValue = "1") Integer page,
@@ -46,6 +56,13 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Get user by id", description = "Ger users by specified id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful return user data"),
+            @ApiResponse(responseCode = "404", description = "no user found with specified id", content = @Content),
+            @ApiResponse(responseCode = "500", description = "internal server error", content = @Content)
+    })
+    
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
         try {
