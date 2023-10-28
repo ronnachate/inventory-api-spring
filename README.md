@@ -22,3 +22,8 @@ $ ./gradlew test
 $ ./gradlew testCodeCoverageReport
 ```
 * you can found coverage report at build/reports/jacoco/testCodeCoverageReport
+
+
+## OpenAPI documentation
+
+* request to /swagger-ui
