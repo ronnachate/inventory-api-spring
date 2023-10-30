@@ -18,4 +18,12 @@ public class UserMappingProfile {
             }
         };
     }
+
+    public static PropertyMap<User, UserDTO> EntitityToDTO() {
+        return new PropertyMap<User, UserDTO>() {
+            @Override
+            protected void configure() {
+            }
+        };
+    }
 }

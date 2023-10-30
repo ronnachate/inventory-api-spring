@@ -30,6 +30,8 @@ public class UserDTO {
 
     private UserStatusDTO status;
 
+    private int statusId;
+
     private Date createdAt;
 
     private Date updatedAt;

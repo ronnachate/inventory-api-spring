@@ -31,8 +31,7 @@ public class InventoryApplication {
 	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public ModelMapper modelMapper() {
 		var modelMapper = new ModelMapper();
-		modelMapper.getConfiguration()
-        	.setMatchingStrategy(MatchingStrategies.LOOSE);
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		return modelMapper;
 	}
 

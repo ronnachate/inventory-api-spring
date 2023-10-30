@@ -1,6 +1,8 @@
 package com.ronnachate.inventory.user.controller;
 
 import java.util.UUID;
+
+import com.ronnachate.inventory.user.entity.UserStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -74,7 +76,6 @@ public class UserController {
 
             if (response.isPresent()) {
                 var user = response.get();
-
                 var userDTO = modelMapper.map(user, UserDTO.class);
 
                 return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
@@ -91,16 +92,16 @@ public class UserController {
     @PostMapping()
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO dto) {
         try {
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             modelMapper.addMappings(UserMappingProfile.DtoToEntities());
             var userEntitiy = modelMapper.map(dto, User.class);
-            userEntitiy.getStatus().setId(GenericConstant.ActiveUserStatus);
+            userEntitiy.setStatus(new UserStatus(GenericConstant.ActiveUserStatus));
+
             var user = userService.addUser(userEntitiy);
             dto = modelMapper.map(user, UserDTO.class);
             
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } catch (Exception e) {
-            logger.error("getById Error", e);
+            logger.error("createUser Error", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -19,6 +19,10 @@ public class UserStatus {
     protected UserStatus() {
     }
 
+    public UserStatus(long id) {
+        this.id = id;
+    }
+
     public UserStatus(long id, String name) {
         this.id = id;
         this.name = name;
