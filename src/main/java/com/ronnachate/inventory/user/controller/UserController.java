@@ -21,6 +21,7 @@ import com.ronnachate.inventory.shared.constant.GenericConstant;
 import com.ronnachate.inventory.shared.pagination.Resultset;
 import com.ronnachate.inventory.user.entity.User;
 import com.ronnachate.inventory.user.mapping.UserMappingProfile;
+import com.ronnachate.inventory.user.dto.CreateUserDTO;
 import com.ronnachate.inventory.user.dto.UserDTO;
 import com.ronnachate.inventory.user.service.UserService;
 
@@ -89,17 +90,23 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Create user", description = "create user following given user data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "successful create new user"),
+            @ApiResponse(responseCode = "400", description = "Invalid user data in user request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "internal server error", content = @Content)
+    })
     @PostMapping()
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserDTO dto) {
         try {
             modelMapper.addMappings(UserMappingProfile.DtoToEntities());
             var userEntitiy = modelMapper.map(dto, User.class);
             userEntitiy.setStatus(new UserStatus(GenericConstant.ActiveUserStatus));
 
             var user = userService.addUser(userEntitiy);
-            dto = modelMapper.map(user, UserDTO.class);
+            var userDTO = modelMapper.map(user, UserDTO.class);
             
-            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("createUser Error", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
