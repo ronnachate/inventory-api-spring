@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.checkerframework.checker.units.qual.g;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,10 +71,10 @@ public class UserServiceTest {
         var mockUser = new User("tile1", "name1", "lastname1", "user1");
         List<User> users = Arrays.asList(mockUser);
         Page<User> pagedResponse = new PageImpl<User>(users);
-        PageRequest pageRequest = PageRequest.of(page -1, rows);
+        PageRequest pageRequest = PageRequest.of(page - 1, rows);
         when(userRepository.findAll(pageRequest)).thenReturn(pagedResponse);
         var userPage = userService.getUsers(page, rows);
-        
+
         assertEquals(1, userPage.getTotalElements());
         assertEquals(1, userPage.getTotalPages());
         var user = userPage.getContent().get(0);
@@ -91,7 +92,7 @@ public class UserServiceTest {
         PageRequest pageRequest = PageRequest.of(page - 1, rows);
         when(userRepository.findAll(pageRequest)).thenReturn(pagedResponse);
         var userPage = userService.getUsers(page, rows);
-        
+
         assertEquals(0, userPage.getTotalElements());
         assertEquals(1, userPage.getTotalPages());
     }
@@ -105,6 +106,30 @@ public class UserServiceTest {
         when(userRepository.findAll(pageRequest)).thenThrow(new ArrayIndexOutOfBoundsException());
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
             userService.getUsers(page, rows);
+        });
+    }
+
+    @Test
+    @DisplayName("addUser shoud return saved user data")
+    void addUser_should_return_saved_user_data() {
+        var uuid = UUID.randomUUID();
+        var user = new User("tile1", "name1", "lastname1", "user1");
+        var mockUser = user;
+        mockUser.setId(uuid);
+        when(userRepository.save(user)).thenReturn(mockUser);
+
+        var created = userService.addUser(user);
+        assertEquals(uuid, created.getId());
+        assertEquals("name1", created.getName());
+        assertEquals("user1", created.getUsername());
+    }
+
+    @Test
+    @DisplayName("addUser shoud throw error when error found")
+    void addUser_should_throw_error_when_error_found() {
+        when(userRepository.save(any(User.class))).thenThrow(new ArrayIndexOutOfBoundsException());
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            userService.addUser(new User("tile1", "name1", "lastname1", "user1"));
         });
     }
 

@@ -13,6 +13,7 @@ import com.ronnachate.inventory.user.repository.UserRepository;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -25,5 +26,9 @@ public class UserService {
         PageRequest pageRequest = PageRequest.of(page - 1, rows);
         Page<User> pagingUser = userRepository.findAll(pageRequest);
         return pagingUser;
+    }
+
+    public User addUser(User user) {
+        return userRepository.save(user);
     }
 }
