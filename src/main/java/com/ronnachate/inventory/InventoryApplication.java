@@ -5,12 +5,15 @@ import com.ronnachate.inventory.user.repository.UserStatusRepository;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -25,8 +28,12 @@ public class InventoryApplication {
 	}
 
 	@Bean
+	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public ModelMapper modelMapper() {
-		return new ModelMapper();
+		var modelMapper = new ModelMapper();
+		modelMapper.getConfiguration()
+        	.setMatchingStrategy(MatchingStrategies.LOOSE);
+		return modelMapper;
 	}
 
 	@Autowired

@@ -34,6 +34,9 @@ public class User {
     @JoinColumn(name = "statusId", referencedColumnName = "id")
     private UserStatus status;
 
+    @Column(name = "statusId", insertable = false, updatable = false)
+    private int statusId;
+
     @CreationTimestamp
     @Column(name = "createdAt", nullable = true)
     private Date createdAt;

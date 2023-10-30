@@ -1,8 +1,8 @@
 package com.ronnachate.inventory.user.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class UserStatusDTO {
     private long id;
 

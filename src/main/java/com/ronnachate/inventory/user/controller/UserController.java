@@ -9,12 +9,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ronnachate.inventory.shared.constant.GenericConstant;
 import com.ronnachate.inventory.shared.pagination.Resultset;
 import com.ronnachate.inventory.user.entity.User;
+import com.ronnachate.inventory.user.mapping.UserMappingProfile;
 import com.ronnachate.inventory.user.dto.UserDTO;
 import com.ronnachate.inventory.user.service.UserService;
 
@@ -22,6 +26,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -62,7 +67,6 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "no user found with specified id", content = @Content),
             @ApiResponse(responseCode = "500", description = "internal server error", content = @Content)
     })
-    
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
         try {
@@ -78,6 +82,23 @@ public class UserController {
                 logger.error(String.format("getById not found with: %s", id.toString()));
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
+        } catch (Exception e) {
+            logger.error("getById Error", e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO dto) {
+        try {
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            modelMapper.addMappings(UserMappingProfile.DtoToEntities());
+            var userEntitiy = modelMapper.map(dto, User.class);
+            userEntitiy.getStatus().setId(GenericConstant.ActiveUserStatus);
+            var user = userService.addUser(userEntitiy);
+            dto = modelMapper.map(user, UserDTO.class);
+            
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("getById Error", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
