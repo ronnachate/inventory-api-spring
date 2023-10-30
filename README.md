@@ -1,6 +1,6 @@
 ## Description
 
-Inventory Rest api version with Spring boot
+Inventory Rest api version with Spring boot, hibernate, postgresql
 
 ## Required dependencies
 
