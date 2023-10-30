@@ -1,5 +1,6 @@
 package com.ronnachate.inventory.user;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Type;
@@ -22,11 +23,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import com.google.gson.reflect.TypeToken;
 import com.ronnachate.inventory.user.controller.UserController;
+import com.ronnachate.inventory.user.dto.CreateUserDTO;
 import com.ronnachate.inventory.user.dto.UserDTO;
 import com.ronnachate.inventory.user.entity.User;
 import com.ronnachate.inventory.user.service.UserService;
@@ -34,6 +37,7 @@ import com.ronnachate.inventory.user.service.UserService;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest(classes = UserControllerTest.class)
@@ -129,6 +133,57 @@ public class UserControllerTest {
 
         mockMvc.perform(
                 get("/api/users").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("Create users shoud return correct result with valid user request")
+    public void createUser_with_valid_request_return_correct_response() throws Exception {
+        String user = "{\"name\": \"name1\", \"username\" : \"user1\"}";
+        User mockEntity = new User(null, "name1", null, "user1");
+        UserDTO expectedDto = new UserDTO();
+        expectedDto.setName("name1");
+        expectedDto.setUsername("user1");
+        when(modalMapper.map(any(CreateUserDTO.class), any())).thenReturn(mockEntity);
+        when(modalMapper.map(any(User.class), any())).thenReturn(expectedDto);
+        when(userService.addUser(mockEntity)).thenReturn(mockEntity);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                .content(user).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("name1"));
+    }
+
+    // MethodValidationPostProcessor will not work with
+    // MockMvcBuilders.standaloneSetup()
+    // then we can not test result of validation, return 400 with detail
+    @Test
+    @DisplayName("Create users shoud return bad request with detail for invalid user request")
+    public void createUser_should_return_400_with_detail_for_invalid_request() throws Exception {
+        String noRequiredParams = "{\"name\": \"name1\"}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                .content(noRequiredParams).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        // .andExpect(jsonPath("$.name").value("Name is required"))
+        // .andExpect(jsonPath("$.username").value("Username is required"));
+
+        String invalidInputLength = "{\"name\": \"n\", \"username\" : \"u\"}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                .content(invalidInputLength).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        // .andExpect(jsonPath("$.name").value("Name should have at least 2
+        // characters"))
+        // .andExpect(jsonPath("$.username").value("Username have at least 2
+        // characters"));
+    }
+
+    @Test
+    @DisplayName("Create users shoud return 500 when exception thrown")
+    void createUser_should_return_500_when_exception_thrown() throws Exception {
+        String user = "{\"name\": \"name1\", \"username\" : \"user1\"}";
+        when(modalMapper.map(any(CreateUserDTO.class), any())).thenThrow(new ArrayIndexOutOfBoundsException());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                .content(user).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
 }
